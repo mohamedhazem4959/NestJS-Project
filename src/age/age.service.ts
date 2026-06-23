@@ -6,8 +6,8 @@ export class AgeService {
 
     constructor( private readonly userService: UserService ) { }
 
-    returnAge (id: number, age: number) {
-        const user = this.userService.getUserById(id);
+    async returnAge (id: number, age: number) {
+        const user = await this.userService.getOneUserById(id);
         return `User ${user.name} id ${age} years old`;
     }
 }
