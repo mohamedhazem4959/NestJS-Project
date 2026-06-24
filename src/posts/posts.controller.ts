@@ -1,7 +1,11 @@
-import { Body, Controller, Delete, Get, NotFoundException, Param, ParseIntPipe, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotFoundException, Param, ParseIntPipe, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { createPostSchema, type createPostDto } from './posts.schema';
 import { ZodValidationPipe } from 'src/common/pipes/zod.validation.pipe';
+import { Roles } from 'src/auth/decorator/role.decorator';
+import { use } from 'passport';
+import { AuthGuard } from 'src/auth/auth.guard';
+import { Role } from 'src/generated/prisma/enums';
 
 @Controller('posts')
 export class PostsController {
@@ -21,6 +25,8 @@ export class PostsController {
         return this.postsService.findOne(id);
     }
 
+    @UseGuards(AuthGuard)
+    @Roles(Role.ADMIN)
     @Post()
     addPost(@Body(new ZodValidationPipe(createPostSchema)) post: createPostDto): Promise<createPostDto>{
         return this.postsService.addPost(post); 

@@ -8,6 +8,8 @@ import { ConfigModule } from '@nestjs/config';
 import { PostsModule } from './posts/posts.module';
 import { PrismaService } from './prisma.service';
 import { AuthModule } from './auth/auth.module';
+import { AuthGuard } from './auth/auth.guard';
+import { RolesGuard } from './auth/guards/roles.guard';
 
 @Module({
   imports: [
@@ -21,6 +23,9 @@ import { AuthModule } from './auth/auth.module';
       AuthModule,
     ],
   controllers: [AppController],
-  providers: [AppService, PrismaService],
+  providers: [AppService, PrismaService,
+    { provide: 'APP_GUARD', useClass: AuthGuard },
+    { provide: 'APP_GUARD', useClass: RolesGuard }
+  ],
 })
 export class AppModule {}
