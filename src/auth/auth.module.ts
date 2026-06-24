@@ -6,6 +6,7 @@ import { UserModule } from 'src/user/user.module';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './constants';
 import { HashingService } from './hashing/hashing.service';
+import { GoogleStrategy } from './google.strategy';
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import { HashingService } from './hashing/hashing.service';
         signOptions: { expiresIn: '15m' },
       })
     ],
-  providers: [AuthService, HashingService],
+  providers: [AuthService, HashingService, GoogleStrategy],
   controllers: [AuthController],
 })
 export class AuthModule {}

@@ -35,7 +35,7 @@ export class UserService {
         return this.helloService.getUserHello(user.name);
     }
 
-    async createUser(name: string, email: string, password: string){
+    async createUser(name: string, email: string, password: string | null, googleId?: string){
         const existingUser = await this.prisma.users.findUnique({ where: { email } });
         if(existingUser){
             throw new UnauthorizedException('Invalid credentials');
@@ -45,6 +45,7 @@ export class UserService {
                 name,
                 email,
                 password,
+                googleId,
             },
         });
     }
