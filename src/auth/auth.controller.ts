@@ -9,11 +9,13 @@ import { RequestWithGoogleUser } from './types/auth.types';
 import { Public } from './decorator/public.decorator';
 import { Roles } from './decorator/role.decorator';
 import { Role } from 'src/generated/prisma/enums';
+import { Throttle } from '@nestjs/throttler';
 
 @Controller('auth')
 export class AuthController {
     constructor(private readonly authService: AuthService) { }
 
+    @Throttle({ default: { limit: 3, ttl: 60000 } })
     @Public()
     @Post('login')
     async signIn(@Body(new ZodValidationPipe(signInSchema)) body: signInDto): Promise<{ access_token: string }> {
@@ -26,6 +28,7 @@ export class AuthController {
         return this.authService.singUp(body);
     }
     
+    @Throttle({ default: { limit: 1, ttl: 1000 } })
     @UseGuards(AuthGuard)
     @Roles("USER", "ADMIN")
     @Get('profile')
